@@ -18,12 +18,26 @@ Transform any idle Mac (or Linux PC) into a **24/7 AI server** — local AI mode
 
 ## AI Models Installed (Local, Free, Private)
 
-- **Gemma 3 4B** — Google's lightweight model
-- **Llama 3.1 8B** — Meta's reasoning & coding model
-- **CodeLlama 7B** — Code specialist
-- **Mistral 7B** — Writing & analysis
+| Model | Size | Best For |
+|-------|------|----------|
+| **Gemma 3 4B** | 3.3 GB | Quick Q&A, summaries, fast replies |
+| **Qwen 2.5 Coder 7B** | 4.7 GB | Code generation, HTML/CSS/JS, scripts |
+| **DeepSeek Coder V2 16B** | 8.9 GB | Serious code — full apps, dashboards |
+| **Phi-4 14B** | 9.1 GB | Deep research, analysis, reasoning |
 
 All models run 100% locally. No data leaves your machine. No API costs.
+
+### Upgrade Models
+
+```bash
+# Remove old models
+ollama rm codellama:7b mistral:7b
+
+# Pull the upgraded lineup
+ollama pull qwen2.5-coder:7b
+ollama pull deepseek-coder-v2:16b
+ollama pull phi4:14b
+```
 
 ## Requirements
 
@@ -136,6 +150,26 @@ bash scripts/overnight_code.sh ~/projects/your-repo tasks.txt
 # Wake up to code on a new branch, review the diff
 ```
 
+## AI Workflow Playbook
+
+Use the right model at the right stage — free for exploration, paid only for production:
+
+| Stage | Model | Cost | What Happens |
+|-------|-------|------|--------------|
+| 1. Idea | Gemma 3 4B | FREE | Validate the idea, get a go/no-go |
+| 2. Research | Phi-4 14B | FREE | Market research, architecture, risks |
+| 3. Prototype | DeepSeek Coder V2 | FREE | Generate working code skeleton |
+| 4. Iterate | Local + Claude Code | MIX | Refine with local for small fixes, Claude for complex logic |
+| 5. Build | Claude Code | PAID | Production-grade code with tests |
+| 6. Go Live | Mix | MIX | Deploy, monitor with local LLMs |
+
+```bash
+# Start the workflow for any project
+bash scripts/ai_workflow.sh my-project 1-idea
+```
+
+Every stage writes to a shared `CONTEXT.md` file. When you switch models, the next one reads the context and picks up where the last one left off. 70% of ideas die before Stage 4 — you've spent nothing to find out.
+
 ## Project Structure
 
 ```
@@ -155,6 +189,11 @@ ai-server-in-a-box/
 │   └── index.html               # Monitoring dashboard
 ├── creative-hub/
 │   └── index.html               # Creative tools portal
+├── scripts/
+│   └── ai_workflow.sh          # Idea-to-Live pipeline runner
+├── playbook/
+│   ├── AI_PLAYBOOK.md          # Complete workflow guide
+│   └── CONTEXT_TEMPLATE.md     # Shared context template
 ├── LICENSE
 └── README.md
 ```
@@ -172,7 +211,7 @@ PRs welcome! Ideas for improvement:
 - [ ] Apple Silicon optimization (GPU inference via Metal)
 - [ ] One-click installer (.pkg or .dmg)
 - [ ] Web-based setup wizard
-- [ ] More model options (Phi-3, Qwen, DeepSeek)
+- [x] More model options (DeepSeek Coder V2, Qwen 2.5, Phi-4)
 - [ ] Voice interface integration
 
 ## License
