@@ -53,21 +53,34 @@ nohup python3 -m http.server 9090 &>/dev/null &
 echo "      ✓ Dashboard started on port 9090"
 
 # 5. Creative Hub (port 9091)
-echo "[5/5] Starting Creative Hub..."
+echo "[5/6] Starting Creative Hub..."
 cd ~/ai-ecosystem/creative-hub 2>/dev/null
 nohup python3 -m http.server 9091 &>/dev/null &
 echo "      ✓ Creative Hub started on port 9091"
+
+# 6. Playwright MCP (port 8931) - browser automation MCP server
+echo "[6/6] Starting Playwright MCP..."
+mkdir -p ~/qa/logs
+if pgrep -f "@playwright/mcp" >/dev/null 2>&1; then
+    echo "      ℹ Playwright MCP already running"
+else
+    nohup npx -y @playwright/mcp@latest \
+        --port 8931 --host 0.0.0.0 --allowed-hosts "*" --headless \
+        > ~/qa/logs/playwright-mcp.log 2>&1 &
+    echo "      ✓ Playwright MCP started on port 8931"
+fi
 
 echo ""
 echo "╔══════════════════════════════════════════════╗"
 echo "║  All Services Running!                       ║"
 echo "╠══════════════════════════════════════════════╣"
-echo "║  AI Chat:       http://localhost:8080        ║"
-echo "║  Jupyter:       http://localhost:8888        ║"
-echo "║               (token: ai-server-token)       ║"
-echo "║  Dashboard:     http://localhost:9090        ║"
-echo "║  Creative Hub:  http://localhost:9091        ║"
-echo "║  Ollama API:    http://localhost:11434       ║"
+echo "║  AI Chat:        http://localhost:8080       ║"
+echo "║  Jupyter:        http://localhost:8888       ║"
+echo "║                (token: ai-server-token)      ║"
+echo "║  Dashboard:      http://localhost:9090       ║"
+echo "║  Creative Hub:   http://localhost:9091       ║"
+echo "║  Ollama API:     http://localhost:11434      ║"
+echo "║  Playwright MCP: http://localhost:8931/mcp   ║"
 echo "╚══════════════════════════════════════════════╝"
 echo ""
 echo "Optional: Start ComfyUI (image generation)"
