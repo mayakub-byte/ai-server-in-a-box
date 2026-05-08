@@ -59,7 +59,7 @@ nohup python3 -m http.server 9091 &>/dev/null &
 echo "      ✓ Creative Hub started on port 9091"
 
 # 6. Playwright MCP (port 8931) - browser automation MCP server
-echo "[6/6] Starting Playwright MCP..."
+echo "[6/7] Starting Playwright MCP..."
 mkdir -p ~/qa/logs
 if pgrep -f "@playwright/mcp" >/dev/null 2>&1; then
     echo "      ℹ Playwright MCP already running"
@@ -68,6 +68,20 @@ else
         --port 8931 --host 0.0.0.0 --allowed-hosts "*" --headless \
         > ~/qa/logs/playwright-mcp.log 2>&1 &
     echo "      ✓ Playwright MCP started on port 8931"
+fi
+
+# 7. mcpo - OpenAPI bridge wrapping Playwright MCP for Open WebUI / local LLM tool use
+echo "[7/7] Starting mcpo (Playwright OpenAPI bridge)..."
+if pgrep -f "uvx mcpo" >/dev/null 2>&1 || pgrep -f "[m]cpo " >/dev/null 2>&1; then
+    echo "      ℹ mcpo already running"
+else
+    export PATH=$HOME/.local/bin:$PATH
+    nohup uvx mcpo --port 8932 --host 0.0.0.0 \
+        --api-key "mcpo-yakub-2026" \
+        --server-type "streamable-http" \
+        -- http://localhost:8931/mcp \
+        > ~/qa/logs/mcpo.log 2>&1 &
+    echo "      ✓ mcpo started on port 8932"
 fi
 
 echo ""
@@ -81,6 +95,7 @@ echo "║  Dashboard:      http://localhost:9090       ║"
 echo "║  Creative Hub:   http://localhost:9091       ║"
 echo "║  Ollama API:     http://localhost:11434      ║"
 echo "║  Playwright MCP: http://localhost:8931/mcp   ║"
+echo "║  mcpo (OpenAPI): http://localhost:8932/docs  ║"
 echo "╚══════════════════════════════════════════════╝"
 echo ""
 echo "Optional: Start ComfyUI (image generation)"
